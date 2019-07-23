@@ -23,15 +23,6 @@ def conv2d(input, filter, strides, padding="SAME", name=None):
         name: A name for the operation (optional).
     '''
     return tf.nn.conv2d(input, filter, strides, padding=padding, name=name)  # padding="SAME"用零填充边界
- 
-def Conv(input, name, filter_size, bias_size, stride, padding = 'SAME'):
-    with tf.name_scope(name):
-        with tf.name_scope('Variable'):
-            filters = weight_variable(filter_size, name='filter')
-            bias = weight_variable(bias_size, name='bias')
-        with tf.name_scope("Convolution"):
-            layer = tf.nn.relu(conv2d(input, filters, strides=stride, padding = padding) + bias)
-    return layer
 
 def channel_attention_module(Input_feature, r):
     # image tensor shape: [batch, height, width, channel]
@@ -50,8 +41,8 @@ def channel_attention_module(Input_feature, r):
             with tf.name_scope('Variable'):
                 W0 = weight_variable([channel, int(channel/r)], name='W0')
                 W1 = weight_variable([int(channel/r), channel], name='W1')
-            hidden_layer_m = tf.matmul(F_max, W0)
-            hidden_layer_a = tf.matmul(F_avg, W0)
+            hidden_layer_m = tf.nn.relu(tf.matmul(F_max, W0))
+            hidden_layer_a = tf.nn.relu(tf.matmul(F_avg, W0))
             layer_m = tf.matmul(hidden_layer_m, W1)
             layer_a = tf.matmul(hidden_layer_a, W1)
         with tf.name_scope('ADD'):
