@@ -49,7 +49,7 @@ def channel_attention_module(Input_feature, r):
             channel_attention = layer_m + layer_a
         with tf.name_scope('Sigmoid'):
             channel_attention = tf.nn.sigmoid(channel_attention)
-    return channel_attention
+    return tf.reshape(channel_attention, [-1, 1, 1, channel])
     
 def spatial_attention_module(channel_refined_feature):
     with tf.name_scope('Spatial_Attention_Module'):
